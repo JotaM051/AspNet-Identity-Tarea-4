@@ -33,8 +33,7 @@ public class RolesModel : PageModel
         newRol.FechaAlta = DateTime.Now;
         newRol.Seccion = Rol.Seccion;
         var res = await _roleManager.CreateAsync(newRol);
-        var user = await _userManager.FindByEmailAsync("info@maurobernal.com.ar");
-        var rolassign = await _userManager.AddToRoleAsync(user!, Rol.Name);
+
         return RedirectPermanent("/account/roles");
     }
 }
