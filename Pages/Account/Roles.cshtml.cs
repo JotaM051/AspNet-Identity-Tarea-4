@@ -1,51 +1,40 @@
-using DemoDeIdentity.Identity.Account;
 using DemoDeldentity.Identity;
 using DemoDeldentity.Pages.Account;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
-namespace DemoDeIdentity.Identity.Account;
+namespace DemoDeldentity.Pages.Account;
 
-[AllowAnonymous]
-public class RegisterModel : PageModel
+public class RolesModel : PageModel
 {
+    private readonly RoleManager<MyRol> _roleManager;
     private readonly UserManager<MyUser> _userManager;
-
     [BindProperty]
-    public RegisterDTO Register { get; set; }
-    public string ReturnUrl { get; set; }
-
-    public RegisterModel(UserManager<MyUser> userManager)
-    =>
-        _userManager = userManager;
-
-    public void OnGet()
+    public RolesDTO Rol { get; set; }
+    public RolesModel(
+        RoleManager<MyRol> roleManager,
+        UserManager<MyUser> userManager)
     {
+        _roleManager = roleManager;
+        _userManager = userManager;
     }
-
+    public async Task<ActionResult> OnGet()
+    {
+        var MyRoles = await _roleManager.Roles.ToListAsync();
+        ViewData["roles"] = MyRoles;
+        return Page();
+    }
     public async Task<IActionResult> OnPostAsync()
     {
-        if (Register.Password != Register.Password2)
-        {
-            throw new Exception("Passwords no coinciden");
-        }
-
-        var user = new MyUser();
-        user.NroLegajo = Register.Legajo;
-        user.Email = Register.Email;
-        user.UserName = Register.Email;
-
-
-        var res = await _userManager
-            .CreateAsync(user, Register.Password);
-
-        if (ReturnUrl == null)
-        {
-            ReturnUrl = "/";
-        }
-
-        return LocalRedirect(ReturnUrl);
+        var newRol = new MyRol();
+        newRol.Name = Rol.Name;
+        newRol.FechaAlta = DateTime.Now;
+        newRol.Seccion = Rol.Seccion;
+        var res = await _roleManager.CreateAsync(newRol);
+        var user = await _userManager.FindByEmailAsync("info@maurobernal.com.ar");
+        var rolassign = await _userManager.AddToRoleAsync(user!, Rol.Name);
+        return RedirectPermanent("/account/roles");
     }
 }

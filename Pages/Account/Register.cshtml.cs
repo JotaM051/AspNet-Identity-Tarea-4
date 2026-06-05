@@ -37,7 +37,8 @@ namespace DemoDeldentity.Pages.Account
 
             var res = await _userManager.CreateAsync(user, Register.Password);
 
-            if(ReturnUrl == null) {
+            if (ReturnUrl == null)
+            {
                 ReturnUrl = "/";
             }
 
@@ -45,5 +46,6 @@ namespace DemoDeldentity.Pages.Account
 
         }
 
-   
+
+    }
 }

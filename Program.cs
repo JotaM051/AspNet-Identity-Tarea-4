@@ -1,8 +1,6 @@
-using DemoDeIdentity.Identity;
 using DemoDeldentity.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
